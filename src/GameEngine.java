@@ -5,8 +5,9 @@ import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class GameEngine {
-    static Scanner scan = new Scanner(System.in);
-    static Random rand = new Random();
+    private static Scanner scan = new Scanner(System.in);
+    private static Random rand = new Random();
+    private static int milliSecTimeout = 700;
 
     /**
      * Clears the screan :)
@@ -18,6 +19,24 @@ public class GameEngine {
         // new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
         System.out.print("\033[H\033[2J");
         System.out.flush();
+    }
+
+    /**
+     * It's self explanatory
+     * 
+     * @param text Input text
+     */
+    public static void slowPrint(String text) {
+        char[] chars = text.toCharArray();
+
+        for (int i = 0; i < chars.length; i++) {
+            System.out.print(chars[i]);
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                // Should not happen
+            }
+        }
     }
 
     /**
@@ -59,39 +78,36 @@ public class GameEngine {
             GameEngine.CLS();
             GameEngine.printBoard(board);
 
-            if (playerTurn == 1)
+            if (playerTurn == 1) {
                 System.out.println("Player 1 [ O ]");
-            else
+            } else
                 System.out.println("Player 2 [ X ]");
-            System.out.print("\n Y axes: ");
-            int yInput = scan.nextInt();
 
-            if (yInput == 0) {
-                break;
-            } else if (!(yInput < 5 && yInput > 0)) {
-                System.out.println("Selected square is out of range !!");
-                scan.nextLine();
-                scan.nextLine();
+            System.out.print("\n Y axes: ");
+            String input = scan.nextLine();
+
+            int yInput;
+            if (chechInput(input) != 'X') {
+                yInput = chechInput(input) - '0';
+            } else
                 continue;
-            }
 
             System.out.print(" X axes: ");
-            int xInput = scan.nextInt();
-            if (xInput == 0) {
-                break;
-            } else if (!(xInput < 5 && xInput > 0)) {
-                System.out.println("Selected square is out of range !!");
-                scan.nextLine();
-                scan.nextLine();
+            input = scan.nextLine();
+
+            int xInput;
+            if (chechInput(input) != 'X') {
+                xInput = chechInput(input) - '0';
+            } else
                 continue;
-            }
+
+            // Makes input start from 0 instead of user-friendly 1
             xInput--;
             yInput--;
 
             if (board[yInput].charAt(xInput) != '-') {
                 System.out.print("Selected square is used already !!");
-                scan.nextLine();
-                scan.nextLine();
+                TimeUnit.MILLISECONDS.sleep(milliSecTimeout);
                 continue;
             } else {
                 switch (playerTurn) {
@@ -118,9 +134,9 @@ public class GameEngine {
         if (turnRemaining == 0) {
             GameEngine.CLS();
             GameEngine.printBoard(board);
-            System.out.println("Game is a Draw !!");
+            slowPrint("Game is a Draw !!");
         }
-        scan.nextLine();
+        TimeUnit.SECONDS.sleep(2);
     }
 
     /**
@@ -164,34 +180,28 @@ public class GameEngine {
                 case 1:
                     System.out.println("Player 1 ( O )");
                     System.out.print(" Y axes: ");
-                    yInput = scan.nextInt();
-                    if (yInput == 0) {
-                        endGame = true;
-                        break;
-                    } else if (!(yInput < 5 && yInput > 0)) {
-                        System.out.println("Selected square is out of range !!");
-                        scan.nextLine();
-                        scan.nextLine();
+
+                    String input = scan.nextLine();
+                    if (chechInput(input) != 'X') {
+                        yInput = chechInput(input) - '0';
+                    } else
                         continue;
-                    }
+
                     System.out.print(" X axes: ");
-                    xInput = scan.nextInt();
-                    if (xInput == 0) {
-                        endGame = true;
-                        break;
-                    } else if (!(xInput < 5 && xInput > 0)) {
-                        System.out.println("Selected square is out of range !!");
-                        scan.nextLine();
-                        scan.nextLine();
+                    input = scan.nextLine();
+
+                    if (chechInput(input) != 'X') {
+                        xInput = chechInput(input) - '0';
+                    } else
                         continue;
-                    }
+
+                    // Makes input start from 0 instead of user-friendly 1
                     xInput--;
                     yInput--;
 
                     if (board[yInput].charAt(xInput) != '-') {
                         System.out.print("Selected square is used already !!");
-                        scan.nextLine();
-                        scan.nextLine();
+                        TimeUnit.MILLISECONDS.sleep(700);
                         continue;
                     } else {
                         board[yInput] = (board[yInput].substring(0, xInput) + 'O'
@@ -201,7 +211,7 @@ public class GameEngine {
 
                         if (GameEngine.winLogic(board, yInput, xInput, 3)) {
                             endGame = true;
-                            scan.nextLine();
+                            TimeUnit.MILLISECONDS.sleep(milliSecTimeout);
                             turnRemaining++;
                             break;
                         }
@@ -213,11 +223,11 @@ public class GameEngine {
                 case 2:
                     System.out.print("Computer is thinking.");
                     // JAVA WAIT FFS
-                    TimeUnit.SECONDS.sleep(1);
+                    TimeUnit.MILLISECONDS.sleep(milliSecTimeout);
                     System.out.print('.');
-                    TimeUnit.SECONDS.sleep(1);
+                    TimeUnit.MILLISECONDS.sleep(milliSecTimeout);
                     System.out.print('.');
-                    TimeUnit.SECONDS.sleep(1);
+                    TimeUnit.MILLISECONDS.sleep(milliSecTimeout);
 
                     int temp = rand.nextInt(squarList.size());
                     int selectedSquareNum = squarList.get(temp);
@@ -234,7 +244,7 @@ public class GameEngine {
 
                     if (GameEngine.winLogic(board, height, selectedSquareNum, 3)) {
                         endGame = true;
-                        scan.nextLine();
+                        TimeUnit.MILLISECONDS.sleep(milliSecTimeout);
                         turnRemaining++;
                         break;
                     }
@@ -250,7 +260,24 @@ public class GameEngine {
         if (turnRemaining == 0) {
             GameEngine.CLS();
             GameEngine.printBoard(board);
-            System.out.println("Game is a Draw !!");
+            slowPrint("Game is a Draw !!");
+        }
+        TimeUnit.SECONDS.sleep(2);
+    }
+
+    /**
+     * Checks for invalid inputs
+     * 
+     * @param inputLine User input line
+     * @return 'X' if input was wrong, a digit (char) if input was ok.
+     */
+    private static char chechInput(String inputLine) throws InterruptedException {
+        if ((inputLine.charAt(0) <= '9' && inputLine.charAt(0) >= '0') && inputLine.length() == 1) {
+            return inputLine.charAt(0);
+        } else {
+            System.out.print(" !! Wrong Input !! ");
+            TimeUnit.MILLISECONDS.sleep(milliSecTimeout);
+            return 'X';
         }
     }
 
@@ -289,30 +316,26 @@ public class GameEngine {
         if (engine.upDownCounter(board, yInput, xInput) >= scoreToWin) {
             GameEngine.CLS();
             GameEngine.printBoard(board);
-            System.out.println("\n[ " + board[yInput].charAt(xInput) +
-                    " ] has won this match! \n");
-            scan.nextLine();
+            slowPrint("\n[ " + board[yInput].charAt(xInput) +
+                    " ] has won this match! ");
             return true;
         } else if (engine.leftRightCounter(board, yInput, xInput) >= scoreToWin) {
             GameEngine.CLS();
             GameEngine.printBoard(board);
-            System.out.println("\n[ " + board[yInput].charAt(xInput) +
-                    " ] has won this match! \n");
-            scan.nextLine();
+            slowPrint("\n[ " + board[yInput].charAt(xInput) +
+                    " ] has won this match! ");
             return true;
         } else if (engine.topRightDiagonalCounter(board, yInput, xInput) >= scoreToWin) {
             GameEngine.CLS();
             GameEngine.printBoard(board);
-            System.out.println("\n[ " + board[yInput].charAt(xInput) +
-                    " ] has won this match! \n");
-            scan.nextLine();
+            slowPrint("\n[ " + board[yInput].charAt(xInput) +
+                    " ] has won this match! ");
             return true;
         } else if (engine.topLeftDiagonalCounter(board, yInput, xInput) >= scoreToWin) {
             GameEngine.CLS();
             GameEngine.printBoard(board);
-            System.out.println("\n[ " + board[yInput].charAt(xInput) +
-                    " ] has won this match! \n");
-            scan.nextLine();
+            slowPrint("\n[ " + board[yInput].charAt(xInput) +
+                    " ] has won this match! ");
             return true;
         }
         return false;
