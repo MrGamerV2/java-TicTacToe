@@ -22,17 +22,17 @@ public class GameEngine {
     }
 
     /**
-     * It's self explanatory
+     * It's self explanatory..
      * 
      * @param text Input text
      */
-    public static void slowPrint(String text) {
+    public static void slowPrint(String text, int speed) {
         char[] chars = text.toCharArray();
 
         for (int i = 0; i < chars.length; i++) {
             System.out.print(chars[i]);
             try {
-                Thread.sleep(100);
+                Thread.sleep(speed);
             } catch (InterruptedException e) {
                 // Should not happen
             }
@@ -87,19 +87,23 @@ public class GameEngine {
             String input = scan.nextLine();
 
             int yInput;
-            if (chechInput(input) != 'X') {
-                yInput = chechInput(input) - '0';
-            } else
+            if (chechInput(input) == 'B') {
+                break;
+            } else if (chechInput(input) == 'X')
                 continue;
+            else
+                yInput = chechInput(input) - '0';
 
             System.out.print(" X axes: ");
             input = scan.nextLine();
 
             int xInput;
-            if (chechInput(input) != 'X') {
-                xInput = chechInput(input) - '0';
-            } else
+            if (chechInput(input) == 'B') {
+                break;
+            } else if (chechInput(input) == 'X')
                 continue;
+            else
+                xInput = chechInput(input) - '0';
 
             // Makes input start from 0 instead of user-friendly 1
             xInput--;
@@ -127,6 +131,7 @@ public class GameEngine {
 
                 if (GameEngine.winLogic(board, yInput, xInput, scoreToWin)) {
                     turnRemaining++;
+                    TimeUnit.SECONDS.sleep(2);
                     break;
                 }
             }
@@ -134,9 +139,9 @@ public class GameEngine {
         if (turnRemaining == 0) {
             GameEngine.CLS();
             GameEngine.printBoard(board);
-            slowPrint("Game is a Draw !!");
+            slowPrint("Game is a Draw !!", 100);
+            TimeUnit.SECONDS.sleep(2);
         }
-        TimeUnit.SECONDS.sleep(2);
     }
 
     /**
@@ -182,18 +187,24 @@ public class GameEngine {
                     System.out.print(" Y axes: ");
 
                     String input = scan.nextLine();
-                    if (chechInput(input) != 'X') {
+                    if (chechInput(input) == 'B') {
+                        endGame = true;
+                        break;
+                    } else if (chechInput(input) == 'X')
+                    continue;
+                    else
                         yInput = chechInput(input) - '0';
-                    } else
+
+                        System.out.print(" X axes: ");
+                        input = scan.nextLine();
+                        
+                        if (chechInput(input) == 'B') {
+                        endGame = true;
+                        break;
+                    } else if (chechInput(input) == 'X')
                         continue;
-
-                    System.out.print(" X axes: ");
-                    input = scan.nextLine();
-
-                    if (chechInput(input) != 'X') {
+                    else
                         xInput = chechInput(input) - '0';
-                    } else
-                        continue;
 
                     // Makes input start from 0 instead of user-friendly 1
                     xInput--;
@@ -211,7 +222,7 @@ public class GameEngine {
 
                         if (GameEngine.winLogic(board, yInput, xInput, 3)) {
                             endGame = true;
-                            TimeUnit.MILLISECONDS.sleep(milliSecTimeout);
+                            TimeUnit.SECONDS.sleep(2);
                             turnRemaining++;
                             break;
                         }
@@ -221,12 +232,7 @@ public class GameEngine {
                     break;
 
                 case 2:
-                    System.out.print("Computer is thinking.");
-                    // JAVA WAIT FFS
-                    TimeUnit.MILLISECONDS.sleep(milliSecTimeout);
-                    System.out.print('.');
-                    TimeUnit.MILLISECONDS.sleep(milliSecTimeout);
-                    System.out.print('.');
+                    slowPrint("Computer is thinking...", 50);
                     TimeUnit.MILLISECONDS.sleep(milliSecTimeout);
 
                     int temp = rand.nextInt(squarList.size());
@@ -260,20 +266,23 @@ public class GameEngine {
         if (turnRemaining == 0) {
             GameEngine.CLS();
             GameEngine.printBoard(board);
-            slowPrint("Game is a Draw !!");
+            slowPrint("Game is a Draw !!", 100);
+            TimeUnit.SECONDS.sleep(2);
         }
-        TimeUnit.SECONDS.sleep(2);
     }
 
     /**
      * Checks for invalid inputs
      * 
      * @param inputLine User input line
-     * @return 'X' if input was wrong, a digit (char) if input was ok.
+     * @return 'X' if input was wrong, a digit (char) if input was ok and 'B' if we
+     *         wanted to go back
      */
-    private static char chechInput(String inputLine) throws InterruptedException {
-        if ((inputLine.charAt(0) <= '9' && inputLine.charAt(0) >= '0') && inputLine.length() == 1) {
+    public static char chechInput(String inputLine) throws InterruptedException {
+        if ((inputLine.charAt(0) <= '9' && inputLine.charAt(0) > '0') && inputLine.length() == 1) {
             return inputLine.charAt(0);
+        } else if (inputLine.charAt(0) == '0') {
+            return 'B';
         } else {
             System.out.print(" !! Wrong Input !! ");
             TimeUnit.MILLISECONDS.sleep(milliSecTimeout);
@@ -317,25 +326,25 @@ public class GameEngine {
             GameEngine.CLS();
             GameEngine.printBoard(board);
             slowPrint("\n[ " + board[yInput].charAt(xInput) +
-                    " ] has won this match! ");
+                    " ] has won this match! ", 100);
             return true;
         } else if (engine.leftRightCounter(board, yInput, xInput) >= scoreToWin) {
             GameEngine.CLS();
             GameEngine.printBoard(board);
             slowPrint("\n[ " + board[yInput].charAt(xInput) +
-                    " ] has won this match! ");
+                    " ] has won this match! ", 100);
             return true;
         } else if (engine.topRightDiagonalCounter(board, yInput, xInput) >= scoreToWin) {
             GameEngine.CLS();
             GameEngine.printBoard(board);
             slowPrint("\n[ " + board[yInput].charAt(xInput) +
-                    " ] has won this match! ");
+                    " ] has won this match! ", 100);
             return true;
         } else if (engine.topLeftDiagonalCounter(board, yInput, xInput) >= scoreToWin) {
             GameEngine.CLS();
             GameEngine.printBoard(board);
             slowPrint("\n[ " + board[yInput].charAt(xInput) +
-                    " ] has won this match! ");
+                    " ] has won this match! ", 100);
             return true;
         }
         return false;
