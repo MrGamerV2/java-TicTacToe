@@ -1,6 +1,9 @@
 import java.io.IOException;
 import java.util.Scanner;
 
+/**
+ * @author Ilya Mokhtarabadi
+ */
 public class Game {
     static Scanner scan = new Scanner(System.in);
 
@@ -22,8 +25,8 @@ public class Game {
                     "------------------------------------------------------------------------------------\n" +
                     "                       ||    Choose Your Opponent    ||\n\n" +
                     "    1 - Player\n\n    2 - Computer(a dum dum)\n\n    0 - Exit\n\n>>  ");
-
-            String input = scan.nextLine();
+            
+            String input = scan.next();
             int option;
             if (GameEngine.chechInput(input) != 'X') {
                 option = GameEngine.chechInput(input) - '0';

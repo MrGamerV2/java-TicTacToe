@@ -84,7 +84,7 @@ public class GameEngine {
                 System.out.println("Player 2 [ X ]");
 
             System.out.print("\n Y axes: ");
-            String input = scan.nextLine();
+            String input = scan.next();
 
             int yInput;
             if (chechInput(input) == 'B') {
@@ -95,7 +95,7 @@ public class GameEngine {
                 yInput = chechInput(input) - '0';
 
             System.out.print(" X axes: ");
-            input = scan.nextLine();
+            input = scan.next();
 
             int xInput;
             if (chechInput(input) == 'B') {
@@ -186,7 +186,7 @@ public class GameEngine {
                     System.out.println("Player 1 ( O )");
                     System.out.print(" Y axes: ");
 
-                    String input = scan.nextLine();
+                    String input = scan.next();
                     if (chechInput(input) == 'B') {
                         endGame = true;
                         break;
@@ -196,7 +196,7 @@ public class GameEngine {
                         yInput = chechInput(input) - '0';
 
                         System.out.print(" X axes: ");
-                        input = scan.nextLine();
+                        input = scan.next();
                         
                         if (chechInput(input) == 'B') {
                         endGame = true;
@@ -320,27 +320,26 @@ public class GameEngine {
      */
     private static boolean winLogic(String board[], int yInput, int xInput, int scoreToWin)
             throws IOException, InterruptedException {
-        GameEngine engine = new GameEngine();
 
-        if (engine.upDownCounter(board, yInput, xInput) >= scoreToWin) {
+        if (GameEngine.upDownCounter(board, yInput, xInput) >= scoreToWin) {
             GameEngine.CLS();
             GameEngine.printBoard(board);
             slowPrint("\n[ " + board[yInput].charAt(xInput) +
                     " ] has won this match! ", 100);
             return true;
-        } else if (engine.leftRightCounter(board, yInput, xInput) >= scoreToWin) {
+        } else if (GameEngine.leftRightCounter(board, yInput, xInput) >= scoreToWin) {
             GameEngine.CLS();
             GameEngine.printBoard(board);
             slowPrint("\n[ " + board[yInput].charAt(xInput) +
                     " ] has won this match! ", 100);
             return true;
-        } else if (engine.topRightDiagonalCounter(board, yInput, xInput) >= scoreToWin) {
+        } else if (GameEngine.topRightDiagonalCounter(board, yInput, xInput) >= scoreToWin) {
             GameEngine.CLS();
             GameEngine.printBoard(board);
             slowPrint("\n[ " + board[yInput].charAt(xInput) +
                     " ] has won this match! ", 100);
             return true;
-        } else if (engine.topLeftDiagonalCounter(board, yInput, xInput) >= scoreToWin) {
+        } else if (GameEngine.topLeftDiagonalCounter(board, yInput, xInput) >= scoreToWin) {
             GameEngine.CLS();
             GameEngine.printBoard(board);
             slowPrint("\n[ " + board[yInput].charAt(xInput) +
@@ -358,7 +357,7 @@ public class GameEngine {
      * @param xAxes X position of input
      * @return Count of a similar sign in Diagonal (Right to left) line
      */
-    private int upDownCounter(String board[], int yAxes, int xAxes) {
+    private static int upDownCounter(String board[], int yAxes, int xAxes) {
         int count = 1;
 
         if (yAxes != 0) {
@@ -391,7 +390,7 @@ public class GameEngine {
      * @param xAxes X position of input
      * @return Count of a similar sign in horizontal line
      */
-    private int leftRightCounter(String board[], int yAxes, int xAxes) {
+    private static int leftRightCounter(String board[], int yAxes, int xAxes) {
         int count = 1;
 
         if (xAxes != 0) {
@@ -421,7 +420,7 @@ public class GameEngine {
      * @param xAxes X position of input
      * @return Count of a similar sign in Vertical line
      */
-    private int topRightDiagonalCounter(String board[], int yAxes, int xAxes) {
+    private static int topRightDiagonalCounter(String board[], int yAxes, int xAxes) {
         int count = 1;
 
         if (xAxes != 3 && yAxes != 0) {
@@ -459,7 +458,7 @@ public class GameEngine {
      * @param xAxes X position of input
      * @return Count of same in Diagonal (Left to Right) line
      */
-    private int topLeftDiagonalCounter(String board[], int yAxes, int xAxes) {
+    private static int topLeftDiagonalCounter(String board[], int yAxes, int xAxes) {
         int count = 1;
 
         if (xAxes != 0 && yAxes != 0) {
