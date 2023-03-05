@@ -5,14 +5,14 @@ import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class GameEngine {
-    private  Scanner scan = new Scanner(System.in);
-    private  Random rand = new Random();
-    private  int milliSecTimeout = 500;
+    private final Scanner scan = new Scanner(System.in);
+    private final Random rand = new Random();
+    private final int milliSecTimeout = 500;
 
     // SETTING VALUES READ FROM FILE
-    private  int boardSize = 5;
-    private  int scoreToWin = 3;
-    private  int nLockedSquares = 10;
+    private final int boardSize = 4;
+    private final int scoreToWin = 3;
+    private final int nLockedSquares = 3;
 
     /**
      * Clears the screan :)
@@ -46,11 +46,8 @@ public class GameEngine {
 
     /**
      * Main Engine for player opponent.
-     * 
-     * @throws IOException
-     * @throws InterruptedException
      */
-    public void pvP() throws IOException, InterruptedException {
+    public void pvPlayer() throws IOException, InterruptedException {
         // Board Creation
         String[] board = new String[boardSize];
 
@@ -61,7 +58,7 @@ public class GameEngine {
             }
         }
 
-        ArrayList<Integer> squarList = new ArrayList<Integer>();
+        ArrayList<Integer> squarList = new ArrayList<>();
         for (int j = 1; j < (boardSize * boardSize + 1); j++) {
             squarList.add(j);
         }
@@ -82,7 +79,7 @@ public class GameEngine {
         }
         squarList.clear();
 
-        int playerTurn = 1, turnRemaining = 13;
+        int playerTurn = 1, turnRemaining = (boardSize * boardSize - nLockedSquares);
         while (turnRemaining != 0) {
             clearScreen();
             this.printBoard(board);
@@ -170,7 +167,7 @@ public class GameEngine {
             }
         }
 
-        ArrayList<Integer> squarList = new ArrayList<Integer>();
+        ArrayList<Integer> squarList = new ArrayList<>();
         for (int j = 1; j < (boardSize * boardSize + 1); j++) {
             squarList.add(j);
         }
@@ -310,7 +307,7 @@ public class GameEngine {
      * 
      * @param board X square Gameboard
      */
-    private void printBoard(String board[]) {
+    private void printBoard(String[] board) {
         String temp = " ";
 
         for (int i = 0; i < boardSize; i++) {
@@ -343,7 +340,7 @@ public class GameEngine {
      * @throws InterruptedException
      * @return A boolean to indicate if a player has won
      */
-    private boolean winLogic(String board[], int yInput, int xInput, int scoreToWin)
+    private boolean winLogic(String[] board, int yInput, int xInput, int scoreToWin)
             throws IOException, InterruptedException {
 
         if (this.upDownCounter(board, yInput, xInput) >= scoreToWin) {
@@ -382,7 +379,7 @@ public class GameEngine {
      * @param xAxes X position of input
      * @return Count of a similar sign in Diagonal (Right to left) line
      */
-    private int upDownCounter(String board[], int yAxes, int xAxes) {
+    private int upDownCounter(String[] board, int yAxes, int xAxes) {
         int count = 1;
 
         if (yAxes != 0) {
@@ -415,7 +412,7 @@ public class GameEngine {
      * @param xAxes X position of input
      * @return Count of a similar sign in horizontal line
      */
-    private int leftRightCounter(String board[], int yAxes, int xAxes) {
+    private int leftRightCounter(String[] board, int yAxes, int xAxes) {
         int count = 1;
 
         if (xAxes != 0) {
@@ -445,7 +442,7 @@ public class GameEngine {
      * @param xAxes X position of input
      * @return Count of a similar sign in Vertical line
      */
-    private int topRightDiagonalCounter(String board[], int yAxes, int xAxes) {
+    private int topRightDiagonalCounter(String[] board, int yAxes, int xAxes) {
         int count = 1;
 
         if (xAxes != (boardSize - 1) && yAxes != 0) {
@@ -483,7 +480,7 @@ public class GameEngine {
      * @param xAxes X position of input
      * @return Count of same in Diagonal (Left to Right) line
      */
-    private int topLeftDiagonalCounter(String board[], int yAxes, int xAxes) {
+    private int topLeftDiagonalCounter(String[] board, int yAxes, int xAxes) {
         int count = 1;
 
         if (xAxes != 0 && yAxes != 0) {
