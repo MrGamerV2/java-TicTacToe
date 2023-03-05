@@ -5,14 +5,14 @@ import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class GameEngine {
-    private static Scanner scan = new Scanner(System.in);
-    private static Random rand = new Random();
-    private static int milliSecTimeout = 500;
+    private  Scanner scan = new Scanner(System.in);
+    private  Random rand = new Random();
+    private  int milliSecTimeout = 500;
 
     // SETTING VALUES READ FROM FILE
-    private static int boardSize = 5;
-    private static int scoreToWin = 3;
-    private static int nLockedSquares = 10;
+    private  int boardSize = 5;
+    private  int scoreToWin = 3;
+    private  int nLockedSquares = 10;
 
     /**
      * Clears the screan :)
@@ -20,7 +20,7 @@ public class GameEngine {
      * @throws IOException
      * @throws InterruptedException
      */
-    public static void CLS() throws IOException, InterruptedException {
+    public static void clearScreen() throws IOException, InterruptedException {
         new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
         // System.out.print("\033[H\033[2J");
         System.out.flush();
@@ -50,7 +50,7 @@ public class GameEngine {
      * @throws IOException
      * @throws InterruptedException
      */
-    public static void pvP() throws IOException, InterruptedException {
+    public void pvP() throws IOException, InterruptedException {
         // Board Creation
         String[] board = new String[boardSize];
 
@@ -84,8 +84,8 @@ public class GameEngine {
 
         int playerTurn = 1, turnRemaining = 13;
         while (turnRemaining != 0) {
-            GameEngine.CLS();
-            GameEngine.printBoard(board);
+            clearScreen();
+            this.printBoard(board);
 
             if (playerTurn == 1) {
                 System.out.println("Player 1 [ O ]");
@@ -138,7 +138,7 @@ public class GameEngine {
                         break;
                 }
 
-                if (GameEngine.winLogic(board, yInput, xInput, scoreToWin)) {
+                if (this.winLogic(board, yInput, xInput, scoreToWin)) {
                     turnRemaining++;
                     TimeUnit.SECONDS.sleep(2);
                     break;
@@ -146,8 +146,8 @@ public class GameEngine {
             }
         }
         if (turnRemaining == 0) {
-            GameEngine.CLS();
-            GameEngine.printBoard(board);
+            clearScreen();
+            this.printBoard(board);
             slowPrint("Game is a Draw !!", 100);
             TimeUnit.SECONDS.sleep(2);
         }
@@ -159,7 +159,7 @@ public class GameEngine {
      * @throws IOException
      * @throws InterruptedException
      */
-    public static void pvAi() throws IOException, InterruptedException {
+    public void pvAi() throws IOException, InterruptedException {
         // Board Creation
         String[] board = new String[boardSize];
 
@@ -171,7 +171,7 @@ public class GameEngine {
         }
 
         ArrayList<Integer> squarList = new ArrayList<Integer>();
-        for (int j = 1; j < (boardSize * boardSize) + 1; j++) {
+        for (int j = 1; j < (boardSize * boardSize + 1); j++) {
             squarList.add(j);
         }
 
@@ -194,8 +194,8 @@ public class GameEngine {
         boolean endGame = false;
         int yInput, xInput;
         while ((turnRemaining != 0) && !endGame) {
-            GameEngine.CLS();
-            GameEngine.printBoard(board);
+            GameEngine.clearScreen();
+            this.printBoard(board);
             switch (playerTurn) {
                 case 1:
                     System.out.println("Player 1 ( O )");
@@ -235,7 +235,7 @@ public class GameEngine {
 
                         squarList.remove(squarList.indexOf((yInput * 4 + xInput) + 1));
 
-                        if (GameEngine.winLogic(board, yInput, xInput, scoreToWin)) {
+                        if (this.winLogic(board, yInput, xInput, scoreToWin)) {
                             endGame = true;
                             TimeUnit.SECONDS.sleep(2);
                             turnRemaining++;
@@ -263,7 +263,7 @@ public class GameEngine {
                     board[height] = (board[height].substring(0, selectedSquareNum) + 'X'
                             + board[height].substring(selectedSquareNum + 1));
 
-                    if (GameEngine.winLogic(board, height, selectedSquareNum, scoreToWin)) {
+                    if (this.winLogic(board, height, selectedSquareNum, scoreToWin)) {
                         endGame = true;
                         TimeUnit.MILLISECONDS.sleep(milliSecTimeout);
                         turnRemaining++;
@@ -276,11 +276,11 @@ public class GameEngine {
             }
         }
 
-        GameEngine.CLS();
-        GameEngine.printBoard(board);
+        clearScreen();
+        this.printBoard(board);
         if (turnRemaining == 0) {
-            GameEngine.CLS();
-            GameEngine.printBoard(board);
+            clearScreen();
+            this.printBoard(board);
             slowPrint("Game is a Draw !!", 100);
             TimeUnit.SECONDS.sleep(2);
         }
@@ -293,7 +293,7 @@ public class GameEngine {
      * @return 'X' if input was wrong, a digit (char) if input was ok and 'B' if we
      *         wanted to go back
      */
-    public static char checkInput(String inputLine) throws InterruptedException {
+    public char checkInput(String inputLine) throws InterruptedException {
         if ((inputLine.charAt(0) <= '9' && inputLine.charAt(0) > '0') && inputLine.length() == 1) {
             return inputLine.charAt(0);
         } else if (inputLine.charAt(0) == '0') {
@@ -310,7 +310,7 @@ public class GameEngine {
      * 
      * @param board X square Gameboard
      */
-    private static void printBoard(String board[]) {
+    private void printBoard(String board[]) {
         String temp = " ";
 
         for (int i = 0; i < boardSize; i++) {
@@ -343,30 +343,30 @@ public class GameEngine {
      * @throws InterruptedException
      * @return A boolean to indicate if a player has won
      */
-    private static boolean winLogic(String board[], int yInput, int xInput, int scoreToWin)
+    private boolean winLogic(String board[], int yInput, int xInput, int scoreToWin)
             throws IOException, InterruptedException {
 
-        if (GameEngine.upDownCounter(board, yInput, xInput) >= scoreToWin) {
-            GameEngine.CLS();
-            GameEngine.printBoard(board);
+        if (this.upDownCounter(board, yInput, xInput) >= scoreToWin) {
+            clearScreen();
+            this.printBoard(board);
             slowPrint("\n[ " + board[yInput].charAt(xInput) +
                     " ] has won this match!!! ", 100);
             return true;
-        } else if (GameEngine.leftRightCounter(board, yInput, xInput) >= scoreToWin) {
-            GameEngine.CLS();
-            GameEngine.printBoard(board);
+        } else if (this.leftRightCounter(board, yInput, xInput) >= scoreToWin) {
+            clearScreen();
+            this.printBoard(board);
             slowPrint("\n[ " + board[yInput].charAt(xInput) +
                     " ] has won this match!!! ", 100);
             return true;
-        } else if (GameEngine.topRightDiagonalCounter(board, yInput, xInput) >= scoreToWin) {
-            GameEngine.CLS();
-            GameEngine.printBoard(board);
+        } else if (this.topRightDiagonalCounter(board, yInput, xInput) >= scoreToWin) {
+            clearScreen();
+            this.printBoard(board);
             slowPrint("\n[ " + board[yInput].charAt(xInput) +
                     " ] has won this match!!! ", 100);
             return true;
-        } else if (GameEngine.topLeftDiagonalCounter(board, yInput, xInput) >= scoreToWin) {
-            GameEngine.CLS();
-            GameEngine.printBoard(board);
+        } else if (this.topLeftDiagonalCounter(board, yInput, xInput) >= scoreToWin) {
+            clearScreen();
+            this.printBoard(board);
             slowPrint("\n[ " + board[yInput].charAt(xInput) +
                     " ] has won this match!!! ", 100);
             return true;
@@ -382,7 +382,7 @@ public class GameEngine {
      * @param xAxes X position of input
      * @return Count of a similar sign in Diagonal (Right to left) line
      */
-    private static int upDownCounter(String board[], int yAxes, int xAxes) {
+    private int upDownCounter(String board[], int yAxes, int xAxes) {
         int count = 1;
 
         if (yAxes != 0) {
@@ -415,7 +415,7 @@ public class GameEngine {
      * @param xAxes X position of input
      * @return Count of a similar sign in horizontal line
      */
-    private static int leftRightCounter(String board[], int yAxes, int xAxes) {
+    private int leftRightCounter(String board[], int yAxes, int xAxes) {
         int count = 1;
 
         if (xAxes != 0) {
@@ -445,7 +445,7 @@ public class GameEngine {
      * @param xAxes X position of input
      * @return Count of a similar sign in Vertical line
      */
-    private static int topRightDiagonalCounter(String board[], int yAxes, int xAxes) {
+    private int topRightDiagonalCounter(String board[], int yAxes, int xAxes) {
         int count = 1;
 
         if (xAxes != (boardSize - 1) && yAxes != 0) {
@@ -483,7 +483,7 @@ public class GameEngine {
      * @param xAxes X position of input
      * @return Count of same in Diagonal (Left to Right) line
      */
-    private static int topLeftDiagonalCounter(String board[], int yAxes, int xAxes) {
+    private int topLeftDiagonalCounter(String board[], int yAxes, int xAxes) {
         int count = 1;
 
         if (xAxes != 0 && yAxes != 0) {
