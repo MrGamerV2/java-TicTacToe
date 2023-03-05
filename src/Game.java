@@ -28,10 +28,13 @@ public class Game {
             
             String input = scan.next();
             int option;
-            if (GameEngine.chechInput(input) != 'X') {
-                option = GameEngine.chechInput(input) - '0';
-            } else {
+            if (GameEngine.checkInput(input) == 'X') {
                 continue;
+            } else if (GameEngine.checkInput(input) == 'B'){
+                exitCode = 1;
+                continue;
+            } else {
+                option = GameEngine.checkInput(input) - '0';
             }
 
             switch (option) {
