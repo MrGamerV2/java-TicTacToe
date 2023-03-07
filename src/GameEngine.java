@@ -10,9 +10,9 @@ public class GameEngine {
     private final int milliSecTimeout = 500;
 
     // SETTING VALUES READ FROM FILE
-    private final int boardSize = 4;
-    private final int scoreToWin = 3;
-    private final int nLockedSquares = 3;
+    private final int boardSize = 2;  // Max = 9
+    private final int scoreToWin = 4;
+    private final int nLockedSquares = 0;
 
     /**
      * Clears the screen :)
@@ -82,9 +82,9 @@ public class GameEngine {
             this.printBoard(board);
 
             if (playerTurn == 1) {
-                System.out.println("Player 1 [ O ]");
+                System.out.println(" Player 1 [ O ]");
             } else
-                System.out.println("Player 2 [ X ]");
+                System.out.println(" Player 2 [ X ]");
 
             System.out.print("\n Y axes: ");
             String input = scan.next();
@@ -94,8 +94,14 @@ public class GameEngine {
                 continue;
             } else if (checkInput(input) == 'B')
                 break;
-            else
+            else {
                 yInput = checkInput(input) - '0';
+                if (yInput < 0 || yInput > boardSize) {
+                    System.out.println(" !! Wrong Input !! ");
+                    TimeUnit.MILLISECONDS.sleep(milliSecTimeout);
+                    continue;
+                }
+            }
 
             System.out.print(" X axes: ");
             input = scan.next();
@@ -105,15 +111,21 @@ public class GameEngine {
                 continue;
             } else if (checkInput(input) == 'B')
                 break;
-            else
+            else {
                 xInput = checkInput(input) - '0';
+                if (xInput < 0 || xInput > boardSize) {
+                    System.out.println(" !! Wrong Input !! ");
+                    TimeUnit.MILLISECONDS.sleep(milliSecTimeout);
+                    continue;
+                }
+            }
 
             // Makes input start from 0 instead of user-friendly 1
             xInput--;
             yInput--;
 
             if (board[yInput].charAt(xInput) != '-') {
-                System.out.print("Selected square is used already !!");
+                System.out.print(" Selected square is used already !!");
                 TimeUnit.MILLISECONDS.sleep(milliSecTimeout);
             } else {
                 switch (playerTurn) {
@@ -141,7 +153,7 @@ public class GameEngine {
         if (turnRemaining == 0) {
             clearScreen();
             this.printBoard(board);
-            slowPrint("Game is a Draw !!", 100);
+            slowPrint(" Game is a Draw !!", 100);
             TimeUnit.SECONDS.sleep(2);
         }
     }
@@ -188,7 +200,7 @@ public class GameEngine {
             this.printBoard(board);
             switch (playerTurn) {
                 case 1 -> {
-                    System.out.println("Player 1 ( O )");
+                    System.out.println(" Player 1 ( O )");
                     System.out.print(" Y axes: ");
                     String input = scan.next();
                     if (checkInput(input) == 'X')
@@ -196,8 +208,14 @@ public class GameEngine {
                     else if (checkInput(input) == 'B') {
                         endGame = true;
                         break;
-                    } else
+                    } else {
                         yInput = checkInput(input) - '0';
+                        if (yInput < 0 || yInput > boardSize) {
+                            System.out.println(" !! Wrong Input !! ");
+                            TimeUnit.MILLISECONDS.sleep(milliSecTimeout);
+                            continue;
+                        }
+                    }
                     System.out.print(" X axes: ");
                     input = scan.next();
                     if (checkInput(input) == 'X')
@@ -205,21 +223,27 @@ public class GameEngine {
                     else if (checkInput(input) == 'B') {
                         endGame = true;
                         break;
-                    } else
+                    } else {
                         xInput = checkInput(input) - '0';
+                        if (xInput < 0 || xInput > boardSize) {
+                            System.out.println(" !! Wrong Input !! ");
+                            TimeUnit.MILLISECONDS.sleep(milliSecTimeout);
+                            continue;
+                        }
+                    }
 
                     // Makes input start from 0 instead of user-friendly 1
                     xInput--;
                     yInput--;
                     if (board[yInput].charAt(xInput) != '-') {
-                        System.out.print("Selected square is used already !!");
+                        System.out.print(" Selected square is used already !!");
                         TimeUnit.MILLISECONDS.sleep(700);
                         continue;
                     } else {
                         board[yInput] = (board[yInput].substring(0, xInput) + 'O'
                                 + board[yInput].substring(xInput + 1));
 
-                        squareList.remove(yInput * 4 + xInput + 1);
+                        squareList.remove(yInput * boardSize + xInput);
 
                         if (this.winLogic(board, yInput, xInput, scoreToWin)) {
                             endGame = true;
@@ -232,7 +256,7 @@ public class GameEngine {
                     turnRemaining--;
                 }
                 case 2 -> {
-                    slowPrint("Computer is thinking...", 40);
+                    slowPrint(" Computer is thinking...", 40);
                     TimeUnit.MILLISECONDS.sleep(milliSecTimeout);
                     int temp = rand.nextInt(squareList.size());
                     int selectedSquareNum = squareList.get(temp);
@@ -262,7 +286,7 @@ public class GameEngine {
         if (turnRemaining == 0) {
             clearScreen();
             this.printBoard(board);
-            slowPrint("Game is a Draw !!", 100);
+            slowPrint(" Game is a Draw !!", 100);
             TimeUnit.SECONDS.sleep(2);
         }
     }
@@ -326,25 +350,25 @@ public class GameEngine {
         if (this.upDownCounter(board, yInput, xInput) >= scoreToWin) {
             clearScreen();
             this.printBoard(board);
-            slowPrint("\n[ " + board[yInput].charAt(xInput) +
+            slowPrint("\n [ " + board[yInput].charAt(xInput) +
                     " ] has won this match!!! ", 100);
             return true;
         } else if (this.leftRightCounter(board, yInput, xInput) >= scoreToWin) {
             clearScreen();
             this.printBoard(board);
-            slowPrint("\n[ " + board[yInput].charAt(xInput) +
+            slowPrint("\n [ " + board[yInput].charAt(xInput) +
                     " ] has won this match!!! ", 100);
             return true;
         } else if (this.topRightDiagonalCounter(board, yInput, xInput) >= scoreToWin) {
             clearScreen();
             this.printBoard(board);
-            slowPrint("\n[ " + board[yInput].charAt(xInput) +
+            slowPrint("\n [ " + board[yInput].charAt(xInput) +
                     " ] has won this match!!! ", 100);
             return true;
         } else if (this.topLeftDiagonalCounter(board, yInput, xInput) >= scoreToWin) {
             clearScreen();
             this.printBoard(board);
-            slowPrint("\n[ " + board[yInput].charAt(xInput) +
+            slowPrint("\n [ " + board[yInput].charAt(xInput) +
                     " ] has won this match!!! ", 100);
             return true;
         }
