@@ -3,19 +3,25 @@ import java.util.Random;
 
 public class Board {
 
+    /** Size of the game-board */
     private int boardSize;
+    /** Game-board itself */
     public BoardValues[][] gameBoard;
-    private final ArrayList<Integer> squareList = new ArrayList<>();
+    /** Array to store used cells */
+    public ArrayList<Integer> squareList = new ArrayList<>();
 
     /**
      * Sets n*n square size
-     *
      * @param size Size of our game-board
      */
     public void setBoardSize(int size) {
         this.boardSize = size;
     }
 
+    /**
+     * Locks random cells in the board
+     * @param nLockedSquares Amount of locked squares in board
+     */
     public void squareLocker(int nLockedSquares) {
         Random rand = new Random();
 
@@ -36,6 +42,10 @@ public class Board {
         }
     }
 
+    /**
+     * Creates the board
+     * @param nLockedSquares Amount of locked squares in board
+     */
     public void createGameBoard(int nLockedSquares) {
         gameBoard = new BoardValues[boardSize][boardSize];
 
@@ -48,8 +58,7 @@ public class Board {
     }
 
     /**
-     * Prints the game-board
-     *
+     * Prints the game-board :]
      */
     public void printBoard() {
         StringBuilder temp = new StringBuilder("  ");
@@ -64,7 +73,7 @@ public class Board {
         for (int i = 0; i < boardSize; i++) {
             System.out.printf("%-2d |", i + 1);
             for (int j = 0; j < boardSize; j++) {
-                System.out.printf(" %c |", translator(gameBoard[i][j]));
+                System.out.printf(" %s |", (translator(gameBoard[i][j]) + "\033[0m"));
             }
             System.out.println(temp.toString() + '-');
         }
@@ -72,34 +81,30 @@ public class Board {
 
     /**
      * Turns enum to char for printBoard func
-     *
      * @param value A value from BoardValues
-     * @return A char showing that square's status
+     * @return A colored char showing what's in that cell
      */
-    private char translator(BoardValues value) {
+    private String translator(BoardValues value) {
         switch (value) {
             case BLOCKED -> {
-                return '#';
+                return "\033[1;31m" + "#"; // It's RED
             }
             case EMPTY -> {
-                return '-';
+                return "\033[1;30m" + "-"; // It's BLACK
             }
             case X -> {
-                return 'X';
+                return "\033[1;37m" + "X"; // It's WHITE
             }
             case O -> {
-                return 'O';
+                return "\033[1;34m" + "O"; // It's BLUE
             }
             default -> {
-                return 'F';
+                return "F";
             }
         }
     }
 }
 
 enum BoardValues {
-    EMPTY,
-    BLOCKED,
-    X,
-    O
+    EMPTY, BLOCKED, X, O
 }

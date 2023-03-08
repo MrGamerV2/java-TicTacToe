@@ -1,12 +1,16 @@
 public class Player {
-    public int xInput;
-    public int yInput;
+
+    /** Stores player input for later usage */
+    public int xInput, yInput;
+    /** is the player [ X ]?         IT'LL BE CHANGED LATER*/
     public boolean isPlayerX;
+    private final short timeOutInMil = 700;
 
     public Player(boolean isPlayerX) {
         if (isPlayerX) this.isPlayerX = true;
     }
 
+    /** Gets input and stores in local variables */
     public boolean getInput() throws InterruptedException {
 
         if (isPlayerX) System.out.print(" It's [ X ] turn:  \n xAxes: ");
@@ -17,7 +21,7 @@ public class Player {
             temp = Integer.parseInt(App.scan.next()) - 1;
         } catch (NumberFormatException e) {
             System.out.println(" !! WRONG INPUT DETECTED !!");
-            Thread.sleep(500);
+            Thread.sleep(timeOutInMil);
             return false;
         }
         xInput = temp;
@@ -27,7 +31,7 @@ public class Player {
             temp = Integer.parseInt(App.scan.next()) - 1;
         } catch (NumberFormatException e) {
             System.out.println(" !! WRONG INPUT DETECTED !!");
-            Thread.sleep(500);
+            Thread.sleep(timeOutInMil);
             return false;
         }
         yInput = temp;
@@ -35,16 +39,23 @@ public class Player {
         return true;
     }
 
-    public boolean fillSquare(BoardValues[][] gameBoard, int boardSize) throws InterruptedException {
+
+    /** Tries to fill the selected
+     * @param gameBoard The game-board itself
+     * @param boardSize Size of the game-board
+     * @return True if cell was filled successfully
+     * @throws InterruptedException Still, no idea.
+     */
+    public boolean fillCell(BoardValues[][] gameBoard, int boardSize) throws InterruptedException {
 
         if ((xInput < 0 || xInput > boardSize - 1) || (yInput < 0 || yInput > boardSize - 1)) {
             System.out.println(" !! SELECTED SQUARE OUT OF BOUND !!");
-            Thread.sleep(500);
+            Thread.sleep(timeOutInMil);
             return false;
         } else {
             if (gameBoard[xInput][yInput] != BoardValues.EMPTY) {
                 System.out.println(" !! SELECTED SQUARE IS FULL !!");
-                Thread.sleep(500);
+                Thread.sleep(timeOutInMil);
                 return false;
             } else if (isPlayerX) {
                 gameBoard[xInput][yInput] = BoardValues.X;
@@ -56,6 +67,12 @@ public class Player {
         }
     }
 
+    /**
+     * @param gameBoard The game-board itself
+     * @param boardSize Size of square game-board
+     * @param alignNtoWin Amount of locked cells in the board
+     * @return True if a player has won the game
+     */
     public boolean winLogic(BoardValues[][] gameBoard, int boardSize, int alignNtoWin) {
         if (verticalCounter(gameBoard, boardSize, alignNtoWin)) return true;
         else if (horizontalCounter(gameBoard, boardSize, alignNtoWin)) return true;
@@ -63,6 +80,7 @@ public class Player {
         else return diagonalCounterTL(gameBoard, boardSize, alignNtoWin);
     }
 
+    
     private boolean verticalCounter(BoardValues[][] gameBoard, int boardSize, int alignNtoWin) {
         int count = 1;
         int temp = yInput - 1;
@@ -112,7 +130,7 @@ public class Player {
         int xTemp = xInput + 1;
         int yTemp = yInput - 1;
 
-        if (xInput < boardSize - 1 && yInput > 0) {
+        if (xInput < boardSize - 1 && yInput > 0) { // CHECKS TOP RIGHT
             while (gameBoard[xInput][yInput] == gameBoard[xTemp][yTemp]) {
                 count++;
                 xTemp++;
@@ -122,7 +140,7 @@ public class Player {
         }
         xTemp = xInput - 1;
         yTemp = yInput + 1;
-        if (xInput > 0 && yInput < boardSize - 1) {
+        if (xInput > 0 && yInput < boardSize - 1) { // CHECKS BOTTOM LEFT
             while (gameBoard[xInput][yInput] == gameBoard[xTemp][yTemp]) {
                 count++;
                 xTemp--;
@@ -139,7 +157,7 @@ public class Player {
         int xTemp = xInput - 1;
         int yTemp = yInput - 1;
 
-        if (xInput > 0 && yInput > 0) {
+        if (xInput > 0 && yInput > 0) { // CHECKS TOP LEFT
             while (gameBoard[xInput][yInput] == gameBoard[xTemp][yTemp]) {
                 count++;
                 xTemp--;
@@ -149,7 +167,7 @@ public class Player {
         }
         xTemp = xInput + 1;
         yTemp = yInput + 1;
-        if (xInput < boardSize - 1 && yInput < boardSize - 1) {
+        if (xInput < boardSize - 1 && yInput < boardSize - 1) { // CHECKS BOTTOM LEFT
         while (gameBoard[xInput][yInput] == gameBoard[xTemp][yTemp]) {
                 count++;
                 xTemp++;
