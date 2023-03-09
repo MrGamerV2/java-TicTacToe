@@ -3,58 +3,48 @@ import java.util.Random;
 
 public class Board {
 
-    /** Size of the game-board */
-    private int boardSize;
     /** Game-board itself */
     public BoardValues[][] gameBoard;
     /** Array to store used cells */
     public ArrayList<Integer> squareList = new ArrayList<>();
 
-    /**
-     * Sets n*n square size
-     * @param size Size of our game-board
-     */
-    public void setBoardSize(int size) {
-        this.boardSize = size;
-    }
 
     /**
      * Locks random cells in the board
-     * @param nLockedSquares Amount of locked squares in board
      */
-    public void squareLocker(int nLockedSquares) {
+    public void squareLocker() {
         Random rand = new Random();
 
-        for (int i = 0; i < (boardSize * boardSize); i++) {
+        for (int i = 0; i < (Settings.boardSize * Settings.boardSize); i++) {
             squareList.add(i);
         }
-        for (int i = 0; i < nLockedSquares; i++) {
-            int temp = rand.nextInt(squareList.size());
-            int squareNum = squareList.get(temp); // 15
+
+        for (int i = 0; i < Settings.nLockedSquares; i++) {
+            int temp = rand.nextInt(squareList.size()); // KEEPS THE INDEX
+            int squareNum = squareList.get(temp);
             squareList.remove(temp);
 
-            temp = 0; // 1 2 3
-            while (squareNum >= boardSize) { // 11 7 3
+            temp = 0; // TURNS TO TEMP Y AXES
+            while (squareNum >= Settings.boardSize) {
                 temp++;
-                squareNum -= boardSize;
+                squareNum -= Settings.boardSize;
             }
-            gameBoard[squareNum][temp] = BoardValues.BLOCKED;
+            gameBoard[temp][squareNum] = BoardValues.BLOCKED;
         }
     }
 
     /**
      * Creates the board
-     * @param nLockedSquares Amount of locked squares in board
      */
-    public void createGameBoard(int nLockedSquares) {
-        gameBoard = new BoardValues[boardSize][boardSize];
+    public void createGameBoard() {
+        gameBoard = new BoardValues[Settings.boardSize][Settings.boardSize];
 
-        for (int i = 0; i < boardSize; i++) {
-            for (int j = 0; j < boardSize; j++) {
+        for (int i = 0; i < Settings.boardSize; i++) {
+            for (int j = 0; j < Settings.boardSize; j++) {
                 gameBoard[i][j] = BoardValues.EMPTY;
             }
         }
-        squareLocker(nLockedSquares);
+        squareLocker();
     }
 
     /**
@@ -63,16 +53,16 @@ public class Board {
     public void printBoard() {
         StringBuilder temp = new StringBuilder("  ");
 
-        for (int i = 0; i < boardSize; i++) {
+        for (int i = 0; i < Settings.boardSize; i++) {
             temp.append("   ").append(i + 1);
         }
         System.out.println(temp);
         temp = new StringBuilder("\n   ");
-        temp.append("----".repeat(boardSize));
+        temp.append("----".repeat(Settings.boardSize));
 
-        for (int i = 0; i < boardSize; i++) {
+        for (int i = 0; i < Settings.boardSize; i++) {
             System.out.printf("%-2d |", i + 1);
-            for (int j = 0; j < boardSize; j++) {
+            for (int j = 0; j < Settings.boardSize; j++) {
                 System.out.printf(" %s |", (translator(gameBoard[i][j]) + "\033[0m"));
             }
             System.out.println(temp.toString() + '-');
