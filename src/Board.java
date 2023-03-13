@@ -3,15 +3,13 @@ import java.util.Random;
 
 public class Board {
 
-    /** Game-board itself */
+    /**     Game-board itself    */
     public BoardValues[][] gameBoard;
-    /** Array to store used cells */
+    /**     Array to store used cells    */
     public ArrayList<Integer> squareList = new ArrayList<>();
 
 
-    /**
-     * Locks random cells in the board
-     */
+    /**     Locks random cells in the board     */
     public void squareLocker() {
         Random rand = new Random();
 
@@ -19,7 +17,7 @@ public class Board {
             squareList.add(i);
         }
 
-        for (int i = 0; i < Settings.nLockedSquares; i++) {
+        for (int i = 0; i < Settings.lockedCells; i++) {
             int temp = rand.nextInt(squareList.size()); // KEEPS THE INDEX
             int squareNum = squareList.get(temp);
             squareList.remove(temp);
@@ -33,9 +31,7 @@ public class Board {
         }
     }
 
-    /**
-     * Creates the board
-     */
+    /**     Creates the board       */
     public void createGameBoard() {
         gameBoard = new BoardValues[Settings.boardSize][Settings.boardSize];
 
@@ -47,9 +43,7 @@ public class Board {
         squareLocker();
     }
 
-    /**
-     * Prints the game-board :]
-     */
+    /**     Prints the game-board :]        */
     public void printBoard() {
         StringBuilder temp = new StringBuilder("  ");
 

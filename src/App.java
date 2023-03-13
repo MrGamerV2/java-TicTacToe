@@ -1,36 +1,39 @@
+import java.io.IOException;
 import java.util.Random;
 import java.util.Scanner;
 
 public class App {
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, IOException {
         Player p1 = new Player(true); // X
         Player p2 = new Player(false); // O
+
+        Settings.readSettings();
 
         boolean noExit = true;
         while (noExit) {
             clearScreen();
             System.out.print("""
-                    ------------------------------------------------------------------------------------
-                    ######## ####  ######     ########    ###     ######     ########  #######  ########
-                       ##     ##  ##    ##       ##      ## ##   ##    ##       ##    ##     ## ##
-                       ##     ##  ##             ##     ##   ##  ##             ##    ##     ## ##
-                       ##     ##  ##             ##    ##     ## ##             ##    ##     ## ######
-                       ##     ##  ##             ##    ######### ##             ##    ##     ## ##
-                       ##     ##  ##    ##       ##    ##     ## ##    ##       ##    ##     ## ##
-                       ##    ####  ######        ##    ##     ##  ######        ##     #######  ########
-                    ------------------------------------------------------------------------------------
-                                           ||    Choose Your Opponent    ||
-                         1 - Player
+                                     ------------------------------------------------------------------------------------
+                                     ######## ####  ######     ########    ###     ######     ########  #######  ########
+                                        ##     ##  ##    ##       ##      ## ##   ##    ##       ##    ##     ## ##
+                                        ##     ##  ##             ##     ##   ##  ##             ##    ##     ## ##
+                                        ##     ##  ##             ##    ##     ## ##             ##    ##     ## ######
+                                        ##     ##  ##             ##    ######### ##             ##    ##     ## ##
+                                        ##     ##  ##    ##       ##    ##     ## ##    ##       ##    ##     ## ##
+                                        ##    ####  ######        ##    ##     ##  ######        ##     #######  ########
+                                     ------------------------------------------------------------------------------------
+                                                            ||    Choose Your Opponent    ||
+                                          1 - Player
 
-                         2 - Computer(a dum dum)
+                                          2 - Computer(a dum dum)
 
-                         3 - Settings
+                                          3 - Settings
 
-                         0 - Exit
+                                          0 - Exit
 
-                           >>""" + " ");
+                                            >>""" + " ");
             int option = testInput();
-            if (Settings.nLockedSquares >= Settings.boardSize * Settings.boardSize) {
+            if (Settings.lockedCells >= Settings.boardSize * Settings.boardSize) {
                 System.out.println(" CHECK SETTINGS | LOCKED SQUARES > BOARD CELLS");
                 Thread.sleep(1000);
                 option = 3;
@@ -52,9 +55,7 @@ public class App {
         }
     }
 
-    /**
-     * Clears Screen ノ( º _ ºノ)
-     */
+    /**      Clears Screen ノ( º _ ºノ)       */
     public static void clearScreen() {
         // new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
         System.out.print("\033[H\033[2J");
@@ -63,7 +64,6 @@ public class App {
 
     /**
      * Player versus Player mode
-     *
      * @param p1 Player 1 [ O ]
      * @param p2 Player 2 [ X ]
      * @throws InterruptedException I have no idea what this does ¯\_(ツ)_/¯
@@ -73,7 +73,7 @@ public class App {
         board.createGameBoard();
 
         boolean isPlayer1Turn = true;
-        int remainingTurns = Settings.boardSize * Settings.boardSize - Settings.nLockedSquares;
+        int remainingTurns = Settings.boardSize * Settings.boardSize - Settings.lockedCells;
         while (remainingTurns != 0) {
             clearScreen();
             board.printBoard();
@@ -84,7 +84,7 @@ public class App {
                     if (p1.winLogic(board.gameBoard)) {
                         clearScreen();
                         board.printBoard();
-                        System.out.println(" || [ X ] HAS WON THIS MATCH ||");
+                        System.out.print(" || [ X ] HAS WON THIS MATCH ||");
                         Thread.sleep(3000);
                         break;
                     }
@@ -96,7 +96,7 @@ public class App {
                     if (p2.winLogic(board.gameBoard)) {
                         clearScreen();
                         board.printBoard();
-                        System.out.println(" || [ O ] HAS WON THIS MATCH ||");
+                        System.out.print(" || [ O ] HAS WON THIS MATCH ||");
                         Thread.sleep(3000);
                         break;
                     }
@@ -107,7 +107,6 @@ public class App {
 
     /**
      * Player versus AI mode
-     *
      * @param p1 Player 1 [ O ]
      * @param p2 Player 2 [ X ]
      * @throws InterruptedException Again; I have no idea what this does ¯\_(ツ)_/¯
@@ -117,7 +116,7 @@ public class App {
         board.createGameBoard();
 
         boolean isPlayer1Turn = true;
-        int remainingTurns = Settings.boardSize * Settings.boardSize - Settings.nLockedSquares;
+        int remainingTurns = Settings.boardSize * Settings.boardSize - Settings.lockedCells;
         while (remainingTurns != 0) {
             clearScreen();
             board.printBoard();
@@ -127,7 +126,7 @@ public class App {
                     if (p1.winLogic(board.gameBoard)) {
                         clearScreen();
                         board.printBoard();
-                        System.out.println(" || [ X ] HAS WON THIS MATCH ||");
+                        System.out.print(" || [ X ] HAS WON THIS MATCH ||");
                         Thread.sleep(3000);
                         break;
                     }
@@ -151,7 +150,7 @@ public class App {
                     if (p2.winLogic(board.gameBoard)) {
                         clearScreen();
                         board.printBoard();
-                        System.out.println(" || [ O ] HAS WON THIS MATCH ||");
+                        System.out.print(" || [ O ] HAS WON THIS MATCH ||");
                         Thread.sleep(3000);
                         break;
                     }
@@ -162,6 +161,7 @@ public class App {
         }
     }
 
+    /**     Prevents wrongful Inputs        */
     public static int testInput() {
         Scanner scan = new Scanner(System.in);
         int input;
@@ -170,24 +170,27 @@ public class App {
         } catch (NumberFormatException e) {
             input = -25;
         }
+        scan.close();
         return input;
     }
 
-    public static void settings() {
+    /**     Changes game-file settings     */
+    public static void settings() throws IOException {
         while (true) {
             clearScreen();
-            System.out.println(
-                    " Define your new boardSize, Amount of locked cells and amount of aligned cells needed to win.");
+            System.out.println(" Define your new boardSize, Amount of locked cells and amount of aligned cells needed to win.");
             System.out.printf(" What is the board size (currently = %d)? ", Settings.boardSize);
             Settings.boardSize = testInput();
             if (Settings.boardSize != -25) {
-                System.out.printf(" How many locked cells (currently = %d)? ", Settings.nLockedSquares);
-                Settings.nLockedSquares = testInput();
-                if (Settings.nLockedSquares != -25) {
-                    System.out.printf(" How many cells need to be aligned (currently = %d)? ", Settings.alignNtoWin);
-                    Settings.alignNtoWin = testInput();
-                    if (Settings.alignNtoWin != -25)
+                System.out.printf(" How many locked cells (currently = %d)? ", Settings.lockedCells);
+                Settings.lockedCells = testInput();
+                if (Settings.lockedCells != -25) {
+                    System.out.printf(" How many cells need to be aligned (currently = %d)? ", Settings.alignInARow);
+                    Settings.alignInARow = testInput();
+                    if (Settings.alignInARow != -25){
+                        Settings.writeSettings();
                         break;
+                    }
                 }
             }
         }

@@ -2,9 +2,9 @@ import java.util.Scanner;
 
 public class Player {
 
-    /** Stores player input for later usage */
+    /**     Stores player input for later usage     */
     public int yInput, xInput;
-    /** is the player [ X ]?         IT'LL BE CHANGED LATER*/
+    /**     is the player [ X ]?    */
     public boolean isPlayerX;
     private final short timeOutInMil = 700;
 
@@ -12,9 +12,10 @@ public class Player {
         if (isPlayerX) this.isPlayerX = true;
     }
 
-    /** Gets input and stores in local variables */
+    /**     Gets input and stores in local variables        */
     public boolean getInput() throws InterruptedException {
         Scanner scan = new Scanner(System.in);
+        scan.reset();
         if (isPlayerX) System.out.print(" It's [ X ] turn:  \n yAxes: ");
         else System.out.print(" It's [ O ] turn:  \n yAxes: ");
 
@@ -41,7 +42,8 @@ public class Player {
     }
 
 
-    /** Tries to fill the selected
+    /**
+     * Tries to fill the selected
      * @param gameBoard The game-board itself
      * @param boardSize Size of the game-board
      * @return True if cell was filled successfully
@@ -78,7 +80,7 @@ public class Player {
         else return diagonalCounterTL(gameBoard);
     }
 
-    
+
     private boolean verticalCounter(BoardValues[][] gameBoard) {
         int count = 1;
         int yTemp = yInput - 1;
@@ -98,7 +100,7 @@ public class Player {
                 if (yTemp >= Settings.boardSize) break;
             }
         }
-        return (count >= Settings.alignNtoWin);
+        return (count >= Settings.alignInARow);
     }
 
     private boolean horizontalCounter(BoardValues[][] gameBoard) {
@@ -120,7 +122,7 @@ public class Player {
                 if (xTemp < 0) break;
             }
         }
-        return (count >= Settings.alignNtoWin);
+        return (count >= Settings.alignInARow);
     }
 
     private boolean diagonalCounterTR(BoardValues[][] gameBoard) {
@@ -146,7 +148,7 @@ public class Player {
                 if (xTemp < 0 || yTemp >= Settings.boardSize) break;
             }
         }
-        return (count >= Settings.alignNtoWin);
+        return (count >= Settings.alignInARow);
     }
 
     private boolean diagonalCounterTL(BoardValues[][] gameBoard) {
@@ -165,14 +167,14 @@ public class Player {
         xTemp = xInput + 1;
         yTemp = yInput + 1;
         if (yInput < Settings.boardSize - 1 && xInput < Settings.boardSize - 1) { // CHECKS BOTTOM LEFT
-        while (gameBoard[yInput][xInput] == gameBoard[yTemp][xTemp]) {
+            while (gameBoard[yInput][xInput] == gameBoard[yTemp][xTemp]) {
                 count++;
                 xTemp++;
                 yTemp++;
                 if (xTemp >= Settings.boardSize || yTemp >= Settings.boardSize) break;
             }
         }
-        return count >= Settings.alignNtoWin;
+        return count >= Settings.alignInARow;
     }
 }
 
